@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-@TeleOp(name="tuneTest", group="Linear OpMode")
+@TeleOp(name="tuneTest", group="Grey-bot")
 public class tuneTest extends OpMode {
 
     public DcMotorEx lancher;
