@@ -48,6 +48,10 @@ public class decodeDrive extends LinearOpMode {
     public double curvelocity = 0;
     public double error = 0;
 
+    double step = 0;
+    double count = 0;
+    double amount = 0;
+
 
 
     @Override
@@ -193,19 +197,76 @@ public class decodeDrive extends LinearOpMode {
 
 
 
-                if (gamepad2.b){
-                    if (!buttonPressed){
-                        buttonPressed = true;
+                if (gamepad2.x){
+                    step = 1;
+                }
+                if (gamepad2.y){
+                    step = 1;
+                    amount = 1;
+                }
+                while (step == 1){
+                    if (frontLeftDrive.getPower() == 0 && frontRightDrive.getPower() == 0 && backLeftDrive.getPower() == 0 && backRightDrive.getPower() == 0){
+                        step = 2;
                     }
                 }
-                if (gamepad2.b){
-                    if (buttonPressed){
-                        buttonPressed = false;
+                while (step == 2){
+                    lancher.setVelocity((targetRPM * ticksPerRev) / 60);
+                    if (lancher.getVelocity() == (targetRPM * ticksPerRev) / 60){
+                        step = 3;
                     }
                 }
-                else{
-                    buttonPressed = false;
+                while (step == 3){
+                    passThrough.setPower(.4);
+                    if (lancher.getVelocity() < (targetRPM * ticksPerRev) / 60){
+                        passThrough.setPower(0);
+                        lancher.setVelocity(0);
+                        count = 1;
+                    }
+                    if (count == 1){
+                        if (amount == 1){
+                            step = 0;
+                            count = 0;
+                            amount = 0;
+                        }
+                        else {
+                            step = 4;
+                        }
+
+                    }
                 }
+                while (step == 4){
+                    lancher.setVelocity((targetRPM * ticksPerRev) / 60);
+                    if (lancher.getVelocity() == (targetRPM * ticksPerRev) / 60){
+                        step = 5;
+                    }
+                }
+                while (step == 5){
+                    intake.setPower(.4);
+                    passThrough.setPower(0.4);
+                    if (lancher.getVelocity() < (targetRPM * ticksPerRev) / 60){
+                        passThrough.setPower(0);
+                        intake.setPower(0);
+                        count = 2;
+                    }
+                    if (count == 2){
+                        lancher.setVelocity(0);
+                        step = 0;
+                        count = 0;
+                    }
+                }
+//                if (gamepad2.b){
+//                    if (!buttonPressed){
+//                        buttonPressed = true;
+//                    }
+//                }
+//                if (gamepad2.b){
+//                    if (buttonPressed){
+//                        buttonPressed = false;
+//                    }
+//                }
+//                else{
+//                    buttonPressed = false;
+//                }
 
                 //  \/-Make the lancher lanch when right pad2 stick moved up
                 //make passthough go forward/back when button pressed, when both are pressed, it goes negative
@@ -230,20 +291,23 @@ public class decodeDrive extends LinearOpMode {
                     intake.setPower(0);
                     passThrough.setPower(0);
                 }
-                if (gamepad1.bWasPressed()){
-                    stepIndex = (stepIndex + 1) % stepSize.length;
-                }
-
-                if (gamepad1.dpadLeftWasPressed()){
-                    f += stepSize[stepIndex];
-                }
-                if (gamepad1.dpadRightWasPressed()) {
-                    f -= stepSize[stepIndex];
-                }
+//                if (gamepad1.bWasPressed()){
+//                    stepIndex = (stepIndex + 1) % stepSize.length;
+//                }
+//
+//                if (gamepad1.dpadLeftWasPressed()){
+//                    f += stepSize[stepIndex];
+//                }
+//                if (gamepad1.dpadRightWasPressed()) {
+//                    f -= stepSize[stepIndex];
+//                }
 
 
 
                 // Show the elapsed game time and wheel power.
+                telemetry.addData("step",step);
+                telemetry.addData("count",count);
+                telemetry.addData("amount",amount);
                 telemetry.addData("velocity",lancher.getVelocity());
                 telemetry.addData("passthrough power",passThrough.getPower());
                 telemetry.addData("intake power", intake.getPower());
