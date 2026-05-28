@@ -56,6 +56,7 @@ public class decodeDrive extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        lancherTimer = new ElapsedTime();
 
 //        initAprilTag();
 
@@ -85,10 +86,10 @@ public class decodeDrive extends LinearOpMode {
         // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
 
         lancher.setDirection(DcMotorEx.Direction.FORWARD);
         intake.setDirection(DcMotor.Direction.REVERSE);
@@ -111,13 +112,43 @@ public class decodeDrive extends LinearOpMode {
             while (opModeIsActive()) {
                 double max;
 
+                if (step > 1){
+                    double axial = 0; //forward backward // Note: pushing stick forward gives negative value
+                    double lateral = 0; // lefty righty
+                    double yaw = 0;
+                }
+                else {
+                    double axial = -gamepad1.left_stick_y; //forward backward // Note: pushing stick forward gives negative value
+                    double lateral = gamepad1.left_stick_x; // lefty righty
+                    double yaw = gamepad1.right_stick_x;
+                    double frontLeftPower = axial + lateral + yaw;
+                    double frontRightPower = axial - lateral - yaw;
+                    double backLeftPower = axial - lateral + yaw;
+                    double backRightPower = axial + lateral - yaw;
+//            double liftpower = power; //see line 102
+
+                    // Normalize the values so no wheel power exceeds 100%
+                    // This ensures that the robot maintains the desired motion.
+                    max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower)); //if the values are 0.5, 1, 1.5, and 2, 0.5 is now 0.25. Idk if this is intended
+                    max = Math.max(max, Math.abs(backLeftPower));
+                    max = Math.max(max, Math.abs(backRightPower));
+
+                    if (max > 1.0) {
+                        frontLeftPower /= max;
+                        frontRightPower /= max;
+                        backLeftPower /= max;
+                        backRightPower /= max;
+//                      liftpower /= max;
+                    }
+                    frontLeftDrive.setPower(Math.pow(frontLeftPower, 3));
+                    frontRightDrive.setPower(Math.pow(frontRightPower, 3));
+                    backLeftDrive.setPower(Math.pow(backLeftPower, 3));
+                    backRightDrive.setPower(Math.pow(backRightPower, 3));
+                }
+
                 // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-                double axial = -gamepad1.left_stick_y; //forward backward // Note: pushing stick forward gives negative value
-                double lateral = gamepad1.left_stick_x; // lefty righty
-                double yaw = gamepad1.right_stick_x; //you spin me right round baby right round like a record baby right round round round
+                 //you spin me right round baby right round like a record baby right round round round
 //            double power = gamepad2.right_stick_y;   //part isn't complete yet
-                double targetRPM = 5700; //shooter
-                double ticksPerRev = 28;
 
 //            if (gamepad1.left_trigger > 0.000) {
 //                axial = axial * 0.55;
@@ -134,25 +165,7 @@ public class decodeDrive extends LinearOpMode {
                 // Combine the joystick requests for each axis-motion to determine each wheel's power.
                 // Set up a variable for each drive wheel to save the power level for telemetry.
 
-                double frontLeftPower = axial + lateral + yaw;
-                double frontRightPower = axial - lateral - yaw;
-                double backLeftPower = axial - lateral + yaw;
-                double backRightPower = axial + lateral - yaw;
-//            double liftpower = power; //see line 102
 
-                // Normalize the values so no wheel power exceeds 100%
-                // This ensures that the robot maintains the desired motion.
-                max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower)); //if the values are 0.5, 1, 1.5, and 2, 0.5 is now 0.25. Idk if this is intended
-                max = Math.max(max, Math.abs(backLeftPower));
-                max = Math.max(max, Math.abs(backRightPower));
-
-                if (max > 1.0) {
-                    frontLeftPower /= max;
-                    frontRightPower /= max;
-                    backLeftPower /= max;
-                    backRightPower /= max;
-//                liftpower /= max;
-                }
 
                 // This is test code:
                 //
@@ -172,10 +185,7 @@ public class decodeDrive extends LinearOpMode {
             */
 
                 // Send calculated power to wheels
-                frontLeftDrive.setPower(Math.pow(frontLeftPower, 3));
-                frontRightDrive.setPower(Math.pow(frontRightPower, 3));
-                backLeftDrive.setPower(Math.pow(backLeftPower, 3));
-                backRightDrive.setPower(Math.pow(backRightPower, 3));
+
 //            lift1.setPower(liftpower);
 //            lift2.setPower(liftpower);
 
@@ -187,63 +197,78 @@ public class decodeDrive extends LinearOpMode {
 
                 PIDFCoefficients frontRight = new PIDFCoefficients(f, 0, 0, 0);
                 frontRightDrive.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, frontRight);
-                if (gamepad2.right_stick_y > 0.01) {
-                    lancher.setVelocity((targetRPM * ticksPerRev) / 60);
-                }
-                if (gamepad2.right_stick_y <= 0.01){
-                    lancher.setVelocity(0);
-                }
+//                if (gamepad2.right_stick_y > 0.01) {
+//                    lancher.setVelocity((targetRPM * ticksPerRev) / 60);
+//                }
+//                if (gamepad2.right_stick_y <= 0.01){
+//                    lancher.setVelocity(0);
+//                }
 
 
-
-
+                double targetRPM = 0; //shooter
+                double ticksPerRev = 28;
+                double dis = 0;
                 if (gamepad2.x){
                     step = 1;
+                    targetRPM = 5700;
+                    dis = (targetRPM * ticksPerRev) / 60;
                 }
-                if (gamepad2.y){
+                if (gamepad2.a){
                     step = 1;
-                    amount = 1;
+                    targetRPM = 5500;
+                    dis = (targetRPM * ticksPerRev) / 60;
+
+                }if (gamepad2.b){
+                    step = 1;
+                    targetRPM = 5300;
+                    dis = (targetRPM * ticksPerRev) / 60;
+
                 }
                 while (step == 1){
+                    lancherTimer.reset();
                     if (frontLeftDrive.getPower() == 0 && frontRightDrive.getPower() == 0 && backLeftDrive.getPower() == 0 && backRightDrive.getPower() == 0){
                         step = 2;
                     }
                 }
                 while (step == 2){
-                    lancher.setVelocity((targetRPM * ticksPerRev) / 60);
-                    if (lancher.getVelocity() == (targetRPM * ticksPerRev) / 60){
+                    lancher.setVelocity(dis);
+                    if (lancher.getVelocity() >= dis - 100){
                         step = 3;
                     }
                 }
                 while (step == 3){
+                    if(lancherTimer.seconds() > 5){
+                        intake.setPower(0);
+                        passThrough.setPower(0);
+                        lancher.setVelocity(0);
+                        step = 0;
+                    }
                     passThrough.setPower(.4);
-                    if (lancher.getVelocity() < (targetRPM * ticksPerRev) / 60){
+                    if (lancher.getVelocity() < dis - 300){
                         passThrough.setPower(0);
                         lancher.setVelocity(0);
                         count = 1;
                     }
                     if (count == 1){
-                        if (amount == 1){
-                            step = 0;
-                            count = 0;
-                            amount = 0;
-                        }
-                        else {
-                            step = 4;
-                        }
-
+                        step = 4;
                     }
                 }
                 while (step == 4){
-                    lancher.setVelocity((targetRPM * ticksPerRev) / 60);
-                    if (lancher.getVelocity() == (targetRPM * ticksPerRev) / 60){
+                    lancher.setVelocity(dis);
+                    if (lancher.getVelocity() >= dis - 100){
                         step = 5;
                     }
                 }
                 while (step == 5){
-                    intake.setPower(.4);
+                    if(step > 0 && lancherTimer.seconds() > 10){
+                        intake.setPower(0);
+                        passThrough.setPower(0);
+                        lancher.setVelocity(0);
+                        step = 0;
+                    }
+                    intake.setPower(.6);
                     passThrough.setPower(0.4);
-                    if (lancher.getVelocity() < (targetRPM * ticksPerRev) / 60){
+                    if (lancher.getVelocity() < dis - 300){
                         passThrough.setPower(0);
                         intake.setPower(0);
                         count = 2;
@@ -270,7 +295,7 @@ public class decodeDrive extends LinearOpMode {
 
                 //  \/-Make the lancher lanch when right pad2 stick moved up
                 //make passthough go forward/back when button pressed, when both are pressed, it goes negative
-                if (gamepad2.a){
+                if (gamepad2.y){
                     passThrough.setPower(-0.6);
                 } else if (gamepad2.right_bumper) {
                     passThrough.setPower(0.4);
