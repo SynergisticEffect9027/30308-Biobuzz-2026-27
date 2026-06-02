@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+import java.util.Timer;
 /* Copyright (c) 2025 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -70,8 +72,9 @@ public class DriveGrayBotTWO extends LinearOpMode {
     //not drive train
     private DcMotor intake;
     private DcMotor bootKicker;
-    private DcMotor shootOne;
-    private DcMotor shootTwo;
+    private DcMotorEx shootOne;
+    private DcMotorEx shootTwo;
+    private ElapsedTime shootTimer;
 
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
@@ -86,8 +89,10 @@ public class DriveGrayBotTWO extends LinearOpMode {
         //not drive
         intake = hardwareMap.get(DcMotor.class, "intake");
         bootKicker = hardwareMap.get(DcMotor.class, "bootKicker");
-        shootOne = hardwareMap.get(DcMotor.class, "shootOne");
-        shootTwo = hardwareMap.get(DcMotor.class, "shootTwo");
+        shootOne = hardwareMap.get(DcMotorEx.class, "shootOne");
+        shootTwo = hardwareMap.get(DcMotorEx.class, "shootTwo");
+        //Timer
+        shootTimer = new ElapsedTime();
 
 // pushServoL.resetDeviceConfigurationForOpMode();
 // pushServoR.resetDeviceConfigurationForOpMode();
@@ -178,8 +183,17 @@ public class DriveGrayBotTWO extends LinearOpMode {
 
             //shoot forward
             if (gamepad1.x) {
-                shootOne.setPower(0.8);
-                shootTwo.setPower(0.8);
+                shootTimer.reset();
+                while (shootTimer.seconds() < 10) {
+                    shootOne.setVelocity(targetRPM / ticksPerRev);
+                    shootTwo.setVelocity(targetRPM / ticksPerRev);
+                    if (shootTimer.seconds() >= 4){
+                        shootOne.setVelocity(targetRPM / ticksPerRev);
+                        shootTwo.setVelocity(targetRPM / ticksPerRev);
+                        bootKicker.setPower(0.8);
+                        break;
+                    }
+                }
                 drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
             }
             //shoot backwards
@@ -190,8 +204,9 @@ public class DriveGrayBotTWO extends LinearOpMode {
 //            }
             //stop shoot
             if (gamepad1.xWasReleased()) {
-                shootOne.setPower(0);
-                shootTwo.setPower(0);
+                shootOne.setVelocity(0);
+                shootTwo.setVelocity(0);
+                bootKicker.setPower(0);
                 drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
             }
 
