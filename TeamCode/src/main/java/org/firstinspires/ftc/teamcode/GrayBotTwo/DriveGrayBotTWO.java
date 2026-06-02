@@ -67,6 +67,11 @@ public class DriveGrayBotTWO extends LinearOpMode {
     private DcMotor frontRightDrive;
     private DcMotor backLeftDrive;
     private DcMotor backRightDrive;
+    //not drive train
+    private DcMotor intake;
+    private DcMotor bootKicker;
+    private DcMotor shootOne;
+    private DcMotor shootTwo;
 
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
@@ -78,6 +83,11 @@ public class DriveGrayBotTWO extends LinearOpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
+        //not drive
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        bootKicker = hardwareMap.get(DcMotor.class, "bootKicker");
+        shootOne = hardwareMap.get(DcMotor.class, "shootOne"); //CHANGE THESE!!
+        shootTwo = hardwareMap.get(DcMotor.class, "shootTwo");
 
 // pushServoL.resetDeviceConfigurationForOpMode();
 // pushServoR.resetDeviceConfigurationForOpMode();
@@ -88,6 +98,11 @@ public class DriveGrayBotTWO extends LinearOpMode {
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        //not drive
+        intake.setDirection(DcMotor.Direction.REVERSE);
+        bootKicker.setDirection(DcMotor.Direction.FORWARD);
+        shootOne.setDirection(DcMotor.Direction.FORWARD);
+        shootTwo.setDirection(DcMotor.Direction.REVERSE);
 
         // This uses RUN_USING_ENCODER to be more accurate. If you don't have the encoder
         // wires, you should remove these
@@ -129,6 +144,57 @@ public class DriveGrayBotTWO extends LinearOpMode {
 // }
             // If you press the left bumper, you get a drive from the point of view of the robot
             // (much like driving an RC vehicle)
+            //intake forward
+            if (gamepad1.a){
+                intake.setPower(0.7);
+                drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+            }
+            //intake backwards
+            if (gamepad1.right_bumper){
+                intake.setPower(-0.7);
+                drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+            }
+            //stop intake
+            if (gamepad1.aWasReleased() || gamepad1.rightBumperWasReleased()){
+                intake.setPower(0);
+                drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+            }
+
+            //bootkicker forward
+            if (gamepad1.b){
+                bootKicker.setPower(0.8);
+                drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+            }
+            //bootkicker bckwards
+            if (gamepad1.left_bumper){
+                bootKicker.setPower(-0.8);
+                drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+            }
+            //stop bootkicker
+            if (gamepad1.leftBumperWasReleased() || gamepad1.bWasReleased()){
+                bootKicker.setPower(0);
+                drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+            }
+
+            //shoot forward
+            if (gamepad1.x) {
+                shootOne.setPower(0.8);
+                shootTwo.setPower(0.8);
+                drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+            }
+            //shoot backwards
+//            if (gamepad1.y) {
+//                shootOne.setPower(-0.8);
+//                shootTwo.setPower(-0.8);
+//                drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+//            }
+            //stop shoot
+            if (gamepad1.xWasReleased()) {
+                shootOne.setPower(0);
+                shootTwo.setPower(0);
+                drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+            }
+
 
             drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
 
