@@ -86,7 +86,7 @@ public class DriveGrayBotTWO extends LinearOpMode {
         //not drive
         intake = hardwareMap.get(DcMotor.class, "intake");
         bootKicker = hardwareMap.get(DcMotor.class, "bootKicker");
-        shootOne = hardwareMap.get(DcMotor.class, "shootOne"); //CHANGE THESE!!
+        shootOne = hardwareMap.get(DcMotor.class, "shootOne");
         shootTwo = hardwareMap.get(DcMotor.class, "shootTwo");
 
 // pushServoL.resetDeviceConfigurationForOpMode();
