@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+package org.firstinspires.ftc.teamcode.pedroPathingBasic;
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.changes;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.drawCurrent;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.drawCurrentAndHistory;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.stopRobot;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.telemetryM;
+import static org.firstinspires.ftc.teamcode.pedroPathingBasic.TuningBasic.changes;
+import static org.firstinspires.ftc.teamcode.pedroPathingBasic.TuningBasic.drawCurrent;
+import static org.firstinspires.ftc.teamcode.pedroPathingBasic.TuningBasic.drawCurrentAndHistory;
+import static org.firstinspires.ftc.teamcode.pedroPathingBasic.TuningBasic.follower;
+import static org.firstinspires.ftc.teamcode.pedroPathingBasic.TuningBasic.stopRobot;
+import static org.firstinspires.ftc.teamcode.pedroPathingBasic.TuningBasic.telemetryM;
 
 import com.bylazar.configurables.PanelsConfigurables;
 import com.bylazar.configurables.annotations.Configurable;
@@ -42,7 +42,7 @@ import java.util.List;
  */
 @Configurable
 @TeleOp(name = "Tuning", group = "Pedro Pathing")
-public class Tuning extends SelectableOpMode {
+public class TuningBasic extends SelectableOpMode {
     public static Follower follower;
 
     @IgnoreConfigurable
@@ -54,7 +54,7 @@ public class Tuning extends SelectableOpMode {
     @IgnoreConfigurable
     static ArrayList<String> changes = new ArrayList<>();
 
-    public Tuning() {
+    public TuningBasic() {
         super("Select a Tuning OpMode", s -> {
             s.folder("Localization", l -> {
                 l.add("Localization Test", LocalizationTest::new);
@@ -92,10 +92,10 @@ public class Tuning extends SelectableOpMode {
     @Override
     public void onSelect() {
         if (follower == null) {
-            follower = Constants.createFollower(hardwareMap);
+            follower = ConstantsBasic.createFollower(hardwareMap);
             PanelsConfigurables.INSTANCE.refreshClass(this);
         } else {
-            follower = Constants.createFollower(hardwareMap);
+            follower = ConstantsBasic.createFollower(hardwareMap);
         }
 
         follower.setStartingPose(new Pose());
