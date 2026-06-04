@@ -191,7 +191,6 @@ public class DriveGrayBotTWO extends LinearOpMode {
                         shootOne.setVelocity(targetRPM / ticksPerRev);
                         shootTwo.setVelocity(targetRPM / ticksPerRev);
                         bootKicker.setPower(0.8);
-                        break;
                     }
                 }
                 drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
