@@ -184,7 +184,7 @@ public class DriveGrayBotTWO extends LinearOpMode {
             //shoot forward
             if (gamepad1.x) {
                 shootTimer.reset();
-                while (shootTimer.seconds() < 10) {
+                while (shootTimer.seconds() < 6) {
                     shootOne.setVelocity(targetRPM / ticksPerRev);
                     shootTwo.setVelocity(targetRPM / ticksPerRev);
                     if (shootTimer.seconds() >= 4){
