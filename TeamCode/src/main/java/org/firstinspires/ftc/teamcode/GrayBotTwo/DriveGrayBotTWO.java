@@ -75,6 +75,7 @@ public class DriveGrayBotTWO extends LinearOpMode {
     private DcMotorEx shootOne;
     private DcMotorEx shootTwo;
     private ElapsedTime shootTimer;
+    private Servo moveTurret;
 
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
@@ -93,6 +94,9 @@ public class DriveGrayBotTWO extends LinearOpMode {
         shootTwo = hardwareMap.get(DcMotorEx.class, "shootTwo");
         //Timer
         shootTimer = new ElapsedTime();
+        moveTurret = hardwareMap.get(Servo.class, "shootServo"); //change name
+        moveTurret.resetDeviceConfigurationForOpMode();
+        moveTurret.scaleRange(0.2, 0.8); // change to what postions the servo can go to
 
 // pushServoL.resetDeviceConfigurationForOpMode();
 // pushServoR.resetDeviceConfigurationForOpMode();
@@ -184,10 +188,13 @@ public class DriveGrayBotTWO extends LinearOpMode {
             //shoot forward
             if (gamepad1.x) {
                 shootTimer.reset();
-                while (shootTimer.seconds() < 6) {
+                while (shootTimer.seconds() < 6 && !gamepad1.dpad_up) {
                     shootOne.setVelocity(targetRPM / ticksPerRev);
                     shootTwo.setVelocity(targetRPM / ticksPerRev);
                     if (shootTimer.seconds() >= 4){
+                        if (gamepad1.dpad_up){
+                            break;
+                        }
                         shootOne.setVelocity(targetRPM / ticksPerRev);
                         shootTwo.setVelocity(targetRPM / ticksPerRev);
                         bootKicker.setPower(0.8);
@@ -203,11 +210,37 @@ public class DriveGrayBotTWO extends LinearOpMode {
 //            }
             //stop shoot
             if (gamepad1.xWasReleased()) {
+                bootKicker.setPower(0);
                 shootOne.setVelocity(0);
                 shootTwo.setVelocity(0);
                 bootKicker.setPower(0);
                 drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
             }
+
+//            //servo move right
+//            if (gamepad1.dpad_right) {
+//                double pos = moveTurret.getPosition();
+//                double newPos = pos + 0.003;
+//                if (newPos > 1.0) {
+//                    newPos = 1.0;
+//                }
+//                moveTurret.setPosition(newPos);
+//                telemetry.addData("linear slide pos to go: ", moveTurret.getPosition());
+//                telemetry.update();
+//
+//            }
+//            //servo move left
+//            if (gamepad1.dpad_left) {
+//                double pos = moveTurret.getPosition();
+//                double newPos = pos - 0.003;
+//                if (newPos < 0) {
+//                    newPos = 0;
+//                }
+//                moveTurret.setPosition(newPos);
+//                telemetry.addData("linear slide pos to go: ", moveTurret.getPosition());
+//                telemetry.update();
+//
+//            }
 
 
             drive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
