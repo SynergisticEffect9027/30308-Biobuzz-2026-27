@@ -46,7 +46,7 @@ public class Constants{
             .hardwareMapName("otos")
             .offset(new SparkFunOTOS.Pose2D(-8,0,Math.PI /-2))
             .linearUnit(DistanceUnit.INCH)
-            .linearScalar(0.991)
+            .linearScalar(1.0369)
             .angularScalar(.991)
             .angleUnit(AngleUnit.RADIANS);
     public static Follower createFollower(HardwareMap hardwareMap) {

@@ -54,7 +54,7 @@ public class big1cycle extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(path1,.7, true);
+                follower.followPath(path1,1, true);
                 setPathState(1);
                 break;
             case 1:

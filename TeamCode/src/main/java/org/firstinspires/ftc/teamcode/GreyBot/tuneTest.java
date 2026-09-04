@@ -33,7 +33,7 @@ public class tuneTest extends OpMode {
 
     @Override
     public void init(){
-        lancher = hardwareMap.get(DcMotorEx.class, "lancher");
+        lancher = hardwareMap.get(DcMotorEx.class, "shooterA");
 //        wheel = hardwareMap.get(DcMotorEx.class, "wheel");
 
         lancher.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);

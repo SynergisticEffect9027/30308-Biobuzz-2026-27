@@ -118,9 +118,9 @@ public class decodeDrive extends LinearOpMode {
                     double yaw = 0;
                 }
                 else {
-                    double axial = -gamepad1.left_stick_y; //forward backward // Note: pushing stick forward gives negative value
-                    double lateral = gamepad1.left_stick_x; // lefty righty
-                    double yaw = gamepad1.right_stick_x;
+                    double axial = -gamepad2.left_stick_y; //forward backward // Note: pushing stick forward gives negative value
+                    double lateral = gamepad2.left_stick_x; // lefty righty
+                    double yaw = gamepad2.right_stick_x;
                     double frontLeftPower = axial + lateral + yaw;
                     double frontRightPower = axial - lateral - yaw;
                     double backLeftPower = axial - lateral + yaw;
@@ -209,16 +209,25 @@ public class decodeDrive extends LinearOpMode {
                 double ticksPerRev = 28;
                 double dis = 0;
                 if (gamepad2.x){
+                    if (gamepad2.left_trigger > 0){
+                        amount = 1;
+                    }
                     step = 1;
                     targetRPM = 5700;
                     dis = (targetRPM * ticksPerRev) / 60;
                 }
                 if (gamepad2.a){
+                    if (gamepad2.left_trigger > 0){
+                        amount = 1;
+                    }
                     step = 1;
                     targetRPM = 5500;
                     dis = (targetRPM * ticksPerRev) / 60;
 
                 }if (gamepad2.b){
+                    if (gamepad2.left_trigger > 0){
+                        amount = 1;
+                    }
                     step = 1;
                     targetRPM = 5300;
                     dis = (targetRPM * ticksPerRev) / 60;
@@ -226,12 +235,23 @@ public class decodeDrive extends LinearOpMode {
                 }
                 while (step == 1){
                     lancherTimer.reset();
+                    telemetry.addData("step",step);
+                    telemetry.update();
                     if (frontLeftDrive.getPower() == 0 && frontRightDrive.getPower() == 0 && backLeftDrive.getPower() == 0 && backRightDrive.getPower() == 0){
                         step = 2;
+                    }
+                    else {
+                        step = 0;
                     }
                 }
                 while (step == 2){
                     lancher.setVelocity(dis);
+                    if(lancherTimer.seconds() > 5){
+                        intake.setPower(0);
+                        passThrough.setPower(0);
+                        lancher.setVelocity(0);
+                        step = 0;
+                    }
                     if (lancher.getVelocity() >= dis - 100){
                         step = 3;
                     }
@@ -247,7 +267,13 @@ public class decodeDrive extends LinearOpMode {
                     if (lancher.getVelocity() < dis - 300){
                         passThrough.setPower(0);
                         lancher.setVelocity(0);
-                        count = 1;
+                        if(amount == 1){
+                            step = 0;
+                            amount = 0;
+                        }
+                        else {
+                            count = 1;
+                        }
                     }
                     if (count == 1){
                         step = 4;
@@ -330,7 +356,6 @@ public class decodeDrive extends LinearOpMode {
 
 
                 // Show the elapsed game time and wheel power.
-                telemetry.addData("step",step);
                 telemetry.addData("count",count);
                 telemetry.addData("amount",amount);
                 telemetry.addData("velocity",lancher.getVelocity());

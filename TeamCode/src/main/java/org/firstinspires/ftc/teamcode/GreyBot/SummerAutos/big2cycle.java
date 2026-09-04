@@ -65,7 +65,7 @@ public class big2cycle extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(path1,.4, true);
+                follower.followPath(path1,1, true);
                 setPathState(1);
                 break;
             case 1:
@@ -85,13 +85,13 @@ public class big2cycle extends OpMode {
                 break;
             case 2:
                 if(!follower.isBusy()){
-                    follower.followPath(path2, .7, true);
+                    follower.followPath(path2, 1, true);
                     setPathState(3);
                 }
                 break;
             case 3:
                 if(!follower.isBusy()){
-                    follower.followPath(path3, .7, true);
+                    follower.followPath(path3, 1, true);
                     intake.setPower(.75);
                     passThrough.setPower(-0.3);
                     setPathState(4);

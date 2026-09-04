@@ -47,7 +47,7 @@ public class small2big extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(goShot,.7, true);
+                follower.followPath(goShot,1, true);
                 setPathState(1);
                 break;
             case 1:

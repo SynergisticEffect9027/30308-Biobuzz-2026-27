@@ -75,7 +75,7 @@ public class small3cycle extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(goShot, .8, true);
+                follower.followPath(goShot, 1, true);
                 follower.pausePathFollowing();
                 lancherTimer.reset();
                 lancher.setVelocity((targetRPM * ticksPerRev) / 60);
@@ -94,7 +94,7 @@ public class small3cycle extends OpMode {
 
             case 1:
                 if(!follower.isBusy()){
-                    follower.followPath(hi, .7, true);
+                    follower.followPath(hi, 1, true);
                     intake.setPower(.75);
                     passThrough.setPower(-0.3);
                     setPathState(2);
@@ -102,7 +102,7 @@ public class small3cycle extends OpMode {
                 break;
             case 2:
                 if(!follower.isBusy()){
-                    follower.followPath(goshot2, .7, true);
+                    follower.followPath(goshot2, 1, true);
                     intake.setPower(0);
                     passThrough.setPower(0);
                     setPathState(3);
@@ -131,7 +131,7 @@ public class small3cycle extends OpMode {
                 break;
             case 4:
                 if(!follower.isBusy()){
-                    follower.followPath(path5, .7, true);
+                    follower.followPath(path5, 1, true);
                     intake.setPower(.75);
                     passThrough.setPower(-0.3);
                     setPathState(5);

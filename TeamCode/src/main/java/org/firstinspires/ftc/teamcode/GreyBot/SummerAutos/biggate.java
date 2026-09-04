@@ -74,12 +74,12 @@ public class biggate extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(path1,.4, true);
+                follower.followPath(path1,1, true);
                 setPathState(1);
                 break;
             case 1:
                 if(!follower.isBusy()){
-                    follower.followPath(path2, .7, true);
+                    follower.followPath(path2, 1, true);
                     follower.pausePathFollowing();
                     lancherTimer.reset();
                     lancher.setVelocity((targetRPM * ticksPerRev) / 60);
@@ -98,7 +98,7 @@ public class biggate extends OpMode {
                 break;
             case 2:
                 if(!follower.isBusy()){
-                    follower.followPath(path3, .7, true);
+                    follower.followPath(path3, 1, true);
                     intake.setPower(.75);
                     passThrough.setPower(-0.3);
                     setPathState(3);
@@ -114,7 +114,7 @@ public class biggate extends OpMode {
                 break;
             case 4:
                 if(!follower.isBusy()){
-                    follower.followPath(path5, .7, true);
+                    follower.followPath(path5, 1, true);
                     follower.pausePathFollowing();
                     lancherTimer.reset();
                     lancher.setVelocity((targetRPM * ticksPerRev) / 60);
@@ -133,7 +133,7 @@ public class biggate extends OpMode {
                 break;
             case 5:
                 if(!follower.isBusy()){
-                    follower.followPath(path6, .7, true);
+                    follower.followPath(path6, 1, true);
                     intake.setPower(0);
                     passThrough.setPower(0);
                     setPathState(6);
@@ -141,7 +141,7 @@ public class biggate extends OpMode {
                 break;
             case 6:
                 if(!follower.isBusy()){
-                    follower.followPath(path7, .5,true);
+                    follower.followPath(path7, 1,true);
                     setPathState(-1);
                 }
                 break;

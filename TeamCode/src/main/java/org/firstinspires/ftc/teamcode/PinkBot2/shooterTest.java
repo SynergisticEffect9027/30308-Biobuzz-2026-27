@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="shooterTest-pinkBot2", group="pink-bot2")
@@ -92,29 +93,35 @@ public class shooterTest extends LinearOpMode{
                 backLeftDrive.setPower(backLeftPower);
                 backRightDrive.setPower(backRightPower);
 
+                PIDFCoefficients ava = new PIDFCoefficients(96, 0, 0, 12.227);
+
+                shooterA.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, ava);
+                shooterB.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, ava);
+
                 double targetRPM = 0; //shooter
                 double ticksPerRev = 28;
                 double dis = 0;
-                targetRPM = 4500;
+                targetRPM = 6000;
                 dis = (targetRPM * ticksPerRev) / 60;
                 if (gamepad2.b){
+                    lancherTimer.reset();
                     shooterB.setVelocity(dis);
                     shooterA.setVelocity(dis);
                     step = 1;
                 }
                 while (step == 1){
                     telemetry.addData("set",dis);
+                    telemetry.addData("time",lancherTimer.seconds());
                     telemetry.addData("velocity",shooterA.getVelocity());
                     telemetry.addData("velocity",shooterB.getVelocity());
                     telemetry.update();
-                    if (shooterA.getVelocity() >= (dis) && shooterB.getVelocity() >= (dis)){
-                        lancherTimer.reset();
-                        passThrough.setPower(.5);
+                    if (lancherTimer.seconds() > 4){
+                        passThrough.setPower(1);
                         step = 2;
                     }
                 }
                 while (step == 2){
-                    if (lancherTimer.seconds() > 4){
+                    if (lancherTimer.seconds() > 6){
                         passThrough.setPower(0);
                         shooterB.setVelocity(0);
                         shooterA.setVelocity(0);
