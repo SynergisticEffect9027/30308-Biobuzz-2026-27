@@ -29,7 +29,7 @@ public class motorAndServoTest extends LinearOpMode {
                     frontLeftDrive.setPower(.5);
                 }
                 if (gamepad1.bWasReleased()) { //making the motor stop when the button is released
-                    frontLeftDrive.setPower(0); //test comment
+                    frontLeftDrive.setPower(0); //test comment 2
                 }
                 if (gamepad1.x){
                     sickServo.setPosition(1);
